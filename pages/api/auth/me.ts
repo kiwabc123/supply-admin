@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/db/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { extractToken, verifyToken } from '@/lib/auth';
 
 interface MeResponse {
   user?: {
@@ -22,18 +23,21 @@ export default async function handler(
   }
 
   try {
-    // Get token from header
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    // Extract and verify JWT token
+    const token = extractToken(req.headers.authorization);
 
     if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Missing authorization token' });
     }
 
-    // Decode token (in production, use JWT verification)
-    const userId = Buffer.from(token, 'base64').toString().split(':')[0];
+    const decoded = verifyToken(token);
 
-    // Find user
-    const userRecord = await db.select().from(users).where(eq(users.id, userId));
+    if (!decoded) {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+
+    // Get user from database to ensure they still exist
+    const userRecord = await db.select().from(users).where(eq(users.id, decoded.userId));
 
     if (!userRecord.length) {
       return res.status(401).json({ message: 'User not found' });

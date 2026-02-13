@@ -12,9 +12,11 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@vercel/blob": "^2.0.1",
     "clsx": "^1.2.1",
     "drizzle-orm": "^0.29.0",
+    "jsonwebtoken": "^9.0.3",
     "next": "12.3.4",
     "postgres": "^3.3.0",
     "react": "18.2.0",

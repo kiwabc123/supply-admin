@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/db/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { hashPassword, verifyPassword } from '@/lib/auth';
+import { hashPassword, verifyPassword, generateToken } from '@/lib/auth';
 
 interface LoginRequest {
   email: string;
@@ -53,8 +53,15 @@ export default async function handler(
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Generate token (in production, use JWT)
-    const token = Buffer.from(`${user[0].id}:${Date.now()}`).toString('base64');
+    // Generate JWT token
+    const token = generateToken(
+      {
+        userId: user[0].id,
+        email: user[0].email,
+        role: user[0].role,
+      },
+      '7d'
+    );
 
     return res.status(200).json({
       token,
