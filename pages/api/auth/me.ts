@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/db/db';
 import { users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 interface MeResponse {
   user?: {
@@ -32,18 +33,18 @@ export default async function handler(
     const userId = Buffer.from(token, 'base64').toString().split(':')[0];
 
     // Find user
-    const user = await db.select().from(users).where((u) => u.id === userId);
+    const userRecord = await db.select().from(users).where(eq(users.id, userId));
 
-    if (!user.length) {
+    if (!userRecord.length) {
       return res.status(401).json({ message: 'User not found' });
     }
 
     return res.status(200).json({
       user: {
-        id: user[0].id,
-        email: user[0].email,
-        name: user[0].name,
-        role: user[0].role,
+        id: userRecord[0].id,
+        email: userRecord[0].email,
+        name: userRecord[0].name,
+        role: userRecord[0].role,
       },
     });
   } catch (error) {

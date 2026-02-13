@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/db/db';
 import { users } from '@/db/schema';
 import { hashPassword } from '@/lib/auth';
+import { eq } from 'drizzle-orm';
 
 interface RegisterRequest {
   email: string;
@@ -35,9 +36,10 @@ export default async function handler(
     }
 
     // Check if user already exists
-    const existing = await db.select().from(users).where(
-      (u) => u.email === email
-    );
+    const existing = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email));
 
     if (existing.length > 0) {
       return res.status(409).json({ message: 'Email already registered' });
