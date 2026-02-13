@@ -1,100 +1,85 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Layout from './layout-helper';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-}
+import React from 'react';
+import Layout from '@/components/Layout';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AdminDashboard() {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Check authentication
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-
-    setUser(userData ? JSON.parse(userData) : null);
-    setLoading(false);
-  }, [router]);
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      router.push('/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <Layout>
-        <div className="text-center py-12">Loading...</div>
-      </Layout>
-    );
-  }
-
-  if (!user) {
-    return (
-      <Layout>
-        <div className="text-center py-12 text-red-600">Not authorized</div>
-      </Layout>
-    );
-  }
+  const { user } = useAuth();
 
   return (
-    <Layout>
+    <Layout requireAuth={true}>
       <div>
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Admin Dashboard</h1>
-          <div className="flex items-center space-x-4">
-            <div className="text-right">
-              <p className="text-sm text-gray-600">Logged in as</p>
-              <p className="font-semibold">{user.email}</p>
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="mt-2 text-gray-600">Welcome, {user?.name}! 👋</p>
+        </div>
+
+        {/* User Info Card */}
+        <div className="bg-white rounded-lg shadow p-6 mb-8 border-l-4 border-blue-600">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Information</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-500">Email</p>
+              <p className="text-gray-900 font-medium">{user?.email}</p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-            >
-              Logout
+            <div>
+              <p className="text-sm text-gray-500">Role</p>
+              <p className="text-gray-900 font-medium">{user?.role}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">ID</p>
+              <p className="text-gray-900 font-medium text-sm truncate">{user?.id}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Name</p>
+              <p className="text-gray-900 font-medium">{user?.name}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">📦 Products</h3>
+            <p className="text-3xl font-bold text-blue-600 mb-2">0</p>
+            <a href="/products" className="text-blue-600 hover:text-blue-700 text-sm">
+              View all →
+            </a>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">📚 Categories</h3>
+            <p className="text-3xl font-bold text-green-600 mb-2">0</p>
+            <a href="#" className="text-green-600 hover:text-green-700 text-sm">
+              Manage →
+            </a>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">📰 Blog Posts</h3>
+            <p className="text-3xl font-bold text-purple-600 mb-2">0</p>
+            <a href="#" className="text-purple-600 hover:text-purple-700 text-sm">
+              View all →
+            </a>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button className="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium">
+              + Add Product
             </button>
-          </div>
-        </div>
-
-        {/* User Info */}
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-8">
-          <p className="text-sm text-blue-900">
-            <strong>Role:</strong> {user.role}
-          </p>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-6">
-          <div className="bg-gray-100 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">Products</h3>
-            <p className="text-3xl font-bold text-blue-600">0</p>
-          </div>
-          <div className="bg-gray-100 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">Categories</h3>
-            <p className="text-3xl font-bold text-green-600">0</p>
-          </div>
-          <div className="bg-gray-100 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">Blog Posts</h3>
-            <p className="text-3xl font-bold text-purple-600">0</p>
+            <button className="bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-medium">
+              + New Category
+            </button>
+            <button className="bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition font-medium">
+              + Write Blog Post
+            </button>
+            <button className="bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition font-medium">
+              View Analytics
+            </button>
           </div>
         </div>
       </div>
