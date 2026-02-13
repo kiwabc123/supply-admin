@@ -28,6 +28,30 @@ sessions (
 )
 ```
 
+## Setup Instructions
+
+### 1. Seed Demo User (Development Only)
+
+Make a POST request to seed demo users:
+
+```bash
+curl -X POST http://localhost:3001/api/seed
+```
+
+This creates:
+- Admin user: `admin@example.com` / `password123`
+- Regular user: `user@example.com` / `password123`
+
+**Note:** Seeding is only available in development mode!
+
+### 2. Access Login Page
+
+Navigate to: `http://localhost:3001/login`
+
+### 3. Test Credentials
+
+Use the demo credentials from the seed endpoint or login page.
+
 ## Authentication Endpoints
 
 ### Login
@@ -96,10 +120,38 @@ Response:
 }
 ```
 
+### Seed Database (Development Only)
+```
+POST /api/seed
+
+Response:
+{
+  "success": true,
+  "message": "Database seeded successfully",
+  "user": {
+    "id": "uuid",
+    "email": "admin@example.com",
+    "name": "Admin User"
+  }
+}
+```
+
 ## Pages
 
 - `/login` - Login page
-- `/admin` - Admin dashboard (protected)
+- `/admin` - Admin dashboard (protected with token check)
+
+## Client-Side Storage
+
+Authentication tokens are stored in `localStorage`:
+- `token` - Authentication token for API requests
+- `user` - User object (JSON stringified)
+
+Usage example:
+```typescript
+const token = localStorage.getItem('token');
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+```
 
 ## Architecture
 
@@ -123,24 +175,31 @@ Protected Pages
 GET /api/auth/me (verify token)
 ```
 
-## Security Notes
+## Security Considerations
 
-⚠️ **Current Implementation Uses:**
-- SHA-256 for password hashing (NOT production-safe!)
-- Base64 token encoding (NOT JWT!)
+⚠️ **Current Implementation:**
+- Uses SHA-256 for password hashing (NOT secure!)
+- Uses Base64 token encoding (NOT JWT!)
+- Stores tokens in localStorage (vulnerable to XSS!)
 
-**For Production, Upgrade To:**
-- bcrypt for password hashing
-- JWT (jsonwebtoken) for token management
+**For Production Upgrade To:**
+- bcrypt for password hashing (`npm install bcrypt`)
+- JWT (jsonwebtoken) for token management (`npm install jsonwebtoken`)
 - HttpOnly cookies for session storage
 - CSRF protection
-- Rate limiting on login
+- Rate limiting on login attempts
+- Email verification
+- Password reset flow
 
-## Test Credentials
+## Next Steps
 
-```
-Email: admin@example.com
-Password: password123
-```
+1. ✅ Database schema with users and sessions
+2. ✅ Login page UI
+3. ✅ Authentication API endpoints
+4. ✅ Admin dashboard with logout
+5. ⬜ Protected API routes middleware
+6. ⬜ Refresh token mechanism
+7. ⬜ Password recovery/reset
+8. ⬜ Email verification
+9. ⬜ Role-based access control (RBAC) middleware
 
-Use these on the login page to test authentication.
