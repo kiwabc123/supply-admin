@@ -14,6 +14,37 @@ interface MeResponse {
   message?: string;
 }
 
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     tags:
+ *       - Authentication
+ *     summary: Get current user
+ *     description: Get the current authenticated user's information
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - no valid token provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Missing authorization token
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<MeResponse>

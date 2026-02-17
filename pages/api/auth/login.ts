@@ -20,6 +20,56 @@ interface LoginResponse {
   message?: string;
 }
 
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     summary: User login
+ *     description: Authenticate user with email and password. Returns JWT token and user information.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Invalid email or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid email or password
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<LoginResponse>

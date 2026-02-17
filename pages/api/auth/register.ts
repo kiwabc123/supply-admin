@@ -15,6 +15,62 @@ interface RegisterResponse {
   message?: string;
 }
 
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     summary: Register new user
+ *     description: Create a new user account with email, password, and name
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - name
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: newuser@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: password123
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                 message:
+ *                   type: string
+ *                   example: User registered successfully
+ *       400:
+ *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       409:
+ *         description: Email already registered
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<RegisterResponse>

@@ -123,6 +123,33 @@ Open [http://localhost:3000](http://localhost:3000)
 ### Enums
 - `product_area` - GUEST_ROOM, BATHROOM, LOBBY, RESTAURANT, HOUSEKEEPING, BEDROOM, SPA
 
+## API Documentation (Swagger)
+
+Interactive API documentation is available at:
+
+```
+http://localhost:3000/docs
+```
+
+The Swagger UI allows you to:
+- View all available endpoints
+- Test API requests directly from the browser
+- See request/response schemas
+- Authenticate with JWT tokens
+- Check HTTP status codes and error messages
+
+### Available Endpoints
+
+**Authentication:**
+- `POST /api/auth/login` - Login with email and password
+- `POST /api/auth/register` - Register new user
+- `GET /api/auth/me` - Get current user info (requires auth)
+- `POST /api/auth/logout` - Logout user
+
+**Utilities:**
+- `POST /api/seed` - Seed database with demo data (dev only)
+- `GET /api/health` - Health check
+
 ## Development Commands
 
 ```bash
@@ -156,12 +183,16 @@ npm run db:studio    # Open Drizzle Studio
 
 ## API Routes
 
-Coming soon:
+For complete API documentation with interactive testing, visit `/docs` in your browser after starting the development server.
+
+**Planned endpoints:**
 - `POST /api/products` - Create product
 - `GET /api/products` - List products
 - `PUT /api/products/[id]` - Update product
 - `DELETE /api/products/[id]` - Delete product
 - `POST /api/upload` - Upload images
+
+Access the full API documentation at: **`http://localhost:3000/docs`**
 
 ## Deployment
 

@@ -4,6 +4,26 @@ interface LogoutResponse {
   message?: string;
 }
 
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     summary: User logout
+ *     description: Logout the current user
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Logged out successfully
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<LogoutResponse>
