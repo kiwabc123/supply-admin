@@ -1,4 +1,4 @@
-import { pgTable, text, varchar, timestamp, boolean, uuid, foreignKey, uniqueIndex, index, integer, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, text, varchar, timestamp, boolean, uuid, foreignKey, uniqueIndex, index, integer, pgEnum, jsonb } from 'drizzle-orm/pg-core';
 
 // =====================================================
 // AUTH ENUMS
@@ -99,6 +99,8 @@ export const products = pgTable(
     shortDescription: varchar('short_description', { length: 1000 }),
     description: text('description'),
     categoryId: uuid('category_id').notNull(),
+    specs: jsonb('specs'), // Array of {label: string, value: string}
+    features: text('features').array(), // Array of feature strings
     isFeatured: boolean('is_featured').default(false),
     isActive: boolean('is_active').default(true),
     createdAt: timestamp('created_at').defaultNow(),

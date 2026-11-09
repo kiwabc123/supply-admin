@@ -59,6 +59,19 @@ import { eq } from 'drizzle-orm';
  *               categoryId:
  *                 type: string
  *                 format: uuid
+ *               specs:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     label:
+ *                       type: string
+ *                     value:
+ *                       type: string
+ *               features:
+ *                 type: array
+ *                 items:
+ *                   type: string
  *               isFeatured:
  *                 type: boolean
  *               isActive:
@@ -121,6 +134,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           shortDescription: body.shortDescription,
           description: body.description,
           categoryId: body.categoryId,
+          specs: body.specs,
+          features: body.features,
           isFeatured: body.isFeatured,
           isActive: body.isActive,
         })

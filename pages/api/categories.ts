@@ -91,8 +91,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .returning();
 
       return res.status(201).json(newCategory[0]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating category:', error);
+      
+      // Check for unique constraint violation on slug
+      if (error?.cause?.code === '23505' || error?.message?.includes('unique constraint')) {
+        return res.status(409).json({ error: 'A category with this slug already exists' });
+      }
+      
       return res.status(500).json({ error: 'Failed to create category' });
     }
   } else {
